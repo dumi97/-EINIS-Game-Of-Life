@@ -19,6 +19,40 @@ public class CellType {
 		setCellTypeNeighbourData(id, minNeighboursToSurvive, maxNeighboursToSurvive, neighboursToStartLife);
 	}
 	
+	public CellType(CellType other)
+	{
+		this.id = other.id;
+		this.maxNeighboursTotal = other.maxNeighboursTotal;
+		this.color = other.color;
+		
+		HashMap<Integer, Integer> tempMinNeigh = other.getMinNeighboursToSurvive();
+		HashMap<Integer, Integer> tempMaxNeigh = other.getMaxNeighboursToSurvive();
+		HashMap<Integer, Integer> tempNeighToStart = other.getNeighboursToStartLife();
+		
+		// deep copy all hash maps
+		for(Integer i : tempMinNeigh.keySet())
+		{
+			this.minNeighboursToSurvive.put(new Integer(i), new Integer(tempMinNeigh.get(i)));
+			this.maxNeighboursToSurvive.put(new Integer(i), new Integer(tempMaxNeigh.get(i)));
+			this.neighboursToStartLife.put(new Integer(i), new Integer(tempNeighToStart.get(i)));
+		}
+	}
+	
+	public HashMap<Integer, Integer> getMinNeighboursToSurvive()
+	{
+		return minNeighboursToSurvive;
+	}
+
+	public HashMap<Integer, Integer> getMaxNeighboursToSurvive()
+	{
+		return maxNeighboursToSurvive;
+	}
+
+	public HashMap<Integer, Integer> getNeighboursToStartLife()
+	{
+		return neighboursToStartLife;
+	}
+	
 	public boolean setCellTypeNeighbourData(int neighbourId, int minNeighboursToSurvive, int maxNeighboursToSurvive, int neighboursToStartLife)
 	{		
 		System.out.println("Setting data for cell " + id + ": nId=" + neighbourId + ", minN=" + minNeighboursToSurvive + ", maxN=" + maxNeighboursToSurvive + ", nToStart=" + neighboursToStartLife);
@@ -30,8 +64,7 @@ public class CellType {
 		this.maxNeighboursToSurvive.put(neighbourId, maxNeighboursToSurvive);
 		this.neighboursToStartLife.put(neighbourId, neighboursToStartLife);
 		
-		return true;
-		
+		return true;	
 	}
 	
 	// returns true if cell can be born

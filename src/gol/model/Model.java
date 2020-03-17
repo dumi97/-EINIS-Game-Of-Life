@@ -66,7 +66,7 @@ public class Model {
 		}
 	}
 	
-	public void cellClicked(int x, int y, boolean leftClick)
+	public void cellClicked(int x, int y, int buttonNum)
 	{	
 		// clicked outside of the game
 		if(y >= cellGrid.length || x >= cellGrid[0].length || y < 0 || x < 0)
@@ -78,10 +78,13 @@ public class Model {
 		
 		cellsClicked.add(x+","+y);
 		
-		if(leftClick)
+		// handle different mouse buttons
+		if(buttonNum == 0) // left
 			cellGrid[y][x].incrementId();
-		else
+		else if(buttonNum == 1) // right
 			cellGrid[y][x].decrementId();
+		else if(buttonNum == 2) // middle
+			cellGrid[y][x].setId(0);
 	}
 	
 	public void clearClickedCells()
@@ -195,5 +198,15 @@ public class Model {
 		}
 		
 		return result;
+	}
+	
+	public void applySettingsChange(HashMap<Integer,CellType> newCellTypes)
+	{
+		cellTypes.clear();
+		
+		for(Integer i : newCellTypes.keySet())
+		{
+			cellTypes.put(new Integer(i), new CellType(newCellTypes.get(i)));
+		}
 	}
 }

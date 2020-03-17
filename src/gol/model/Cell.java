@@ -54,7 +54,12 @@ public class Cell implements Serializable{
 		if(Settings.getTotalCellTypes() < 1)
 			return;
 		
-		id = (id+1) % (Settings.getTotalCellTypes()+1);
+		do
+		{
+			id = (id+1) % (Settings.getTotalCellTypes()+1);
+		}
+		while(!Model.cellTypes.containsKey(id) && id != 0);
+		
 		//System.out.println("New cell " + x + "," + y + " id: " + id);
 	}
 	
@@ -63,9 +68,14 @@ public class Cell implements Serializable{
 		if(Settings.getTotalCellTypes() < 1)
 			return;
 		
-		id = id - 1;
-		if(id < 0)
-			id = Settings.getTotalCellTypes(); 
+		do
+		{
+			id = id - 1;
+			if(id < 0)
+				id = Settings.getTotalCellTypes();
+		}
+		while(!Model.cellTypes.containsKey(id) && id != 0);
+		
 		//System.out.println("New cell " + x + "," + y + " id: " + id);
 	}
 	

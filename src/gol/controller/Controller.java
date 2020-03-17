@@ -5,11 +5,13 @@ import java.awt.EventQueue;
 import java.awt.MouseInfo;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.SwingUtilities;
 
+import gol.model.CellType;
 import gol.model.Model;
 import gol.model.Settings;
 
@@ -49,9 +51,11 @@ public class Controller {
 			int y = (MouseInfo.getPointerInfo().getLocation().y + yDif) / cellHeight;
 			
 			if(SwingUtilities.isLeftMouseButton(lastClickEvent))
-				model.cellClicked(x, y, true);
+				model.cellClicked(x, y, 0);
 			else if(SwingUtilities.isRightMouseButton(lastClickEvent))
-				model.cellClicked(x, y, false);
+				model.cellClicked(x, y, 1);
+			else if(SwingUtilities.isMiddleMouseButton(lastClickEvent))
+				model.cellClicked(x, y, 2);
 				
 			updateGame();
 	    }
@@ -181,5 +185,14 @@ public class Controller {
 			autoIterator = new AutoIterator();
 			autoTimer.scheduleAtFixedRate(autoIterator, autoBase - oldSpeed, autoBase - this.autoSpeed);
 		}
+	}
+	
+	public void applySettingChange(HashMap<Integer,CellType> newCellTypes)
+	{
+		if(newCellTypes == null)
+			return;
+		
+		model.applySettingsChange(newCellTypes);
+		clear();
 	}
 }

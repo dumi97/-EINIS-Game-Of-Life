@@ -1,0 +1,10 @@
+Rules:
+   	
+   	Multiple cell types are allowed.
+   	Any live cell has a maximum number of neigbours of any type it can tolerate.
+   	If this number is exceeded - it dies.
+   	Any live cell has a list of minimum and maximum neighbours of a given type to survive.
+   	If at least on of these conditions is not met - it dies.
+   	Any dead cell has a list of the number of neighbours of a given type to become alive again.
+   	If more than one condition is met the newly born cell's type is chosen randomly.
+   	If the condition is met but the maximum number of neigbours for that type is exceeded - the cell cannot be born.

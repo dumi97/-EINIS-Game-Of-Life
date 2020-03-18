@@ -50,6 +50,7 @@ import javax.swing.SwingConstants;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import java.awt.SystemColor;
 
 public class View {
 
@@ -118,8 +119,8 @@ public class View {
 		mainPanel.setBackground(Color.DARK_GRAY);
 		layeredPane.setLayout(new CardLayout(0, 0));
 		
-		cellPanel = new JPanel();
-		//cellPanel = painter;
+		//cellPanel = new JPanel();
+		cellPanel = painter;
 		cellPanel.setBackground(Color.LIGHT_GRAY);
 		cellPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
@@ -297,7 +298,7 @@ public class View {
 		
 		textFieldWidth = new JFormattedTextField(NumberFormat.INTEGER_FIELD);
 		textFieldWidth.setHorizontalAlignment(SwingConstants.CENTER);
-		textFieldWidth.setBackground(Color.LIGHT_GRAY);
+		textFieldWidth.setBackground(SystemColor.menu);
 		resolutionPane.add(textFieldWidth);
 		textFieldWidth.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		textFieldWidth.setColumns(10);
@@ -312,7 +313,7 @@ public class View {
 		
 		textFieldHeight = new JFormattedTextField(NumberFormat.INTEGER_FIELD);
 		textFieldHeight.setHorizontalAlignment(SwingConstants.CENTER);
-		textFieldHeight.setBackground(Color.LIGHT_GRAY);
+		textFieldHeight.setBackground(SystemColor.menu);
 		resolutionPane.add(textFieldHeight);
 		textFieldHeight.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		textFieldHeight.setColumns(10);
@@ -509,7 +510,7 @@ public class View {
 			cellPanel.add(lblMaxNeigh);
 			cellPanel.add(Box.createRigidArea(new Dimension(10,0)));
 			JFormattedTextField textFieldMaxNeigh = new JFormattedTextField(NumberFormat.INTEGER_FIELD);
-			textFieldMaxNeigh.setText(Integer.toString(currentCellType.maxNeighboursTotal));
+			textFieldMaxNeigh.setValue(new Integer(currentCellType.maxNeighboursTotal));
 			textFieldMaxNeigh.setHorizontalAlignment(SwingConstants.CENTER);
 			textFieldMaxNeigh.setMaximumSize(new Dimension(18000, textFieldId.getMinimumSize().height+5));
 			textFieldMaxNeigh.addPropertyChangeListener("value", new PropertyChangeListener() {
@@ -533,6 +534,7 @@ public class View {
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
+					@SuppressWarnings("unused")
 					NeighboursWindow nw = new NeighboursWindow(frmGameOfLife, "Neighbour properties", true, currentCellType);
 				}
 			});

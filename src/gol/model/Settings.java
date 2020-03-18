@@ -8,6 +8,7 @@ public class Settings {
 	
 	public static int maxInRow = 1000;
 	public static int maxInColumn = 1000;
+	public static int controlSequence = 12345;
 
 	private static int rollbackId = 1;
 	

@@ -5,11 +5,13 @@ import java.awt.EventQueue;
 import java.awt.MouseInfo;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import gol.model.CellType;
@@ -213,13 +215,49 @@ public class Controller {
 		if(model.getFileChooser() == null)
 			model.setFileChooser();
 		
-		model.getFileChooser().setDialogTitle("Save QDBt File as...");
+		model.getFileChooser().setDialogTitle("Save File as...");
 		
 		int result = model.getFileChooser().showSaveDialog(view.getFrmGameOfLife());
 
 		if(result == JFileChooser.APPROVE_OPTION)
 		{
-			model.writeToFile(model.getFileChooser().getSelectedFile());
+			File f = model.getFileChooser().getSelectedFile();
+			String filePath = f.getAbsolutePath();
+			if(!filePath.matches(".+\\.[a-zA-Z]*"))
+			{
+			    f = new File(filePath + ".gol");
+			}
+			model.writeToFile(f);
+			view.updateFileName(f.getAbsolutePath());
+		}
+	}
+	
+	public void loadFile()
+	{
+		if(model.getFileChooser() == null)
+			model.setFileChooser();
+		
+		model.getFileChooser().setDialogTitle("Load File");
+		
+		int result = model.getFileChooser().showOpenDialog(view.getFrmGameOfLife());
+
+		if(result == JFileChooser.APPROVE_OPTION)
+		{
+			File f = model.getFileChooser().getSelectedFile();
+			result = model.loadFromFile(f);
+			if(result == 0)
+			{
+				view.updateFileName(f.getAbsolutePath());
+				updateGame();
+			}
+			else if(result == 1)
+			{
+				JOptionPane.showMessageDialog(view.getFrmGameOfLife(), "Error while loading file", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			else if(result == 2)
+			{
+				JOptionPane.showMessageDialog(view.getFrmGameOfLife(), "Wrong or corrupted file", "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 }

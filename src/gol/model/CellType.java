@@ -1,9 +1,10 @@
 package gol.model;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class CellType {
+public class CellType implements Serializable{
 	public int id;
 	public int maxNeighboursTotal;
 	private HashMap<Integer, Integer> minNeighboursToSurvive = new HashMap<Integer, Integer>();
@@ -17,6 +18,13 @@ public class CellType {
 		this.color = color;
 		this.maxNeighboursTotal = maxNeighboursTotal;
 		setCellTypeNeighbourData(id, minNeighboursToSurvive, maxNeighboursToSurvive, neighboursToStartLife);
+	}
+	
+	public CellType(int id, int maxNeighboursTotal, Color color)
+	{
+		this.id = id;
+		this.color = color;
+		this.maxNeighboursTotal = maxNeighboursTotal;
 	}
 	
 	public CellType(CellType other)
@@ -62,7 +70,7 @@ public class CellType {
 	
 	public boolean setCellTypeNeighbourData(int neighbourId, int minNeighboursToSurvive, int maxNeighboursToSurvive, int neighboursToStartLife)
 	{		
-		System.out.println("Setting data for cell " + id + ": nId=" + neighbourId + ", minN=" + minNeighboursToSurvive + ", maxN=" + maxNeighboursToSurvive + ", nToStart=" + neighboursToStartLife);
+		//System.out.println("Setting data for cell " + id + ": nId=" + neighbourId + ", minN=" + minNeighboursToSurvive + ", maxN=" + maxNeighboursToSurvive + ", nToStart=" + neighboursToStartLife);
 		
 		if(minNeighboursToSurvive > maxNeighboursToSurvive)
 			minNeighboursToSurvive = maxNeighboursToSurvive;

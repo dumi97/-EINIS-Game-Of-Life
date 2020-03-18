@@ -77,7 +77,7 @@ public class View {
 	
 	private HashMap<Integer, CellType> tempCellTypes;
 	private boolean mustReloadGrid;
-	private JTextField txtAa;
+	private JTextField txtFileName;
 	
 	
 
@@ -128,8 +128,8 @@ public class View {
 		mainPanelFile.setBackground(Color.DARK_GRAY);
 		layeredPane.setLayout(new CardLayout(0, 0));
 		
-		cellPanel = new JPanel();
-		//cellPanel = painter;
+		//cellPanel = new JPanel();
+		cellPanel = painter;
 		cellPanel.setBackground(Color.LIGHT_GRAY);
 		cellPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
@@ -162,9 +162,9 @@ public class View {
 		
 		JButton btnLoad = new JButton("Load");
 		
-		txtAa = new JTextField();
-		txtAa.setEditable(false);
-		txtAa.setColumns(10);
+		txtFileName = new JTextField();
+		txtFileName.setEditable(false);
+		txtFileName.setColumns(10);
 		
 		JButton btnSaveAs = new JButton("Save as");
 		
@@ -200,7 +200,7 @@ public class View {
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnSaveAs)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(txtAa, GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+							.addComponent(txtFileName, GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnLoad)))
 					.addContainerGap())
@@ -212,7 +212,7 @@ public class View {
 					.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnSettings)
 						.addComponent(btnLoad)
-						.addComponent(txtAa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(txtFileName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnSaveAs)
 						.addComponent(btnSave))
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -400,6 +400,27 @@ public class View {
 			{
 				controller.clear();
 			}});
+		// save button action listener
+		btnSave.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				controller.saveFile();
+			}});
+		// save as button action listener
+		btnSaveAs.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				controller.saveAsFile();
+			}});
+		// load button action listener
+		btnLoad.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				controller.loadFile();
+			}});
 		// settings button action listener
 		btnSettings.addActionListener(new ActionListener() {
 			@Override
@@ -436,6 +457,11 @@ public class View {
 		});
 	
 		frmGameOfLife.getContentPane().setLayout(groupLayout);
+	}
+	
+	public void updateFileName(String newName)
+	{
+		txtFileName.setText(newName);
 	}
 	
 	private void closeSettings(boolean applyChanges)

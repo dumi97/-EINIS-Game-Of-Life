@@ -2,6 +2,10 @@ package gol.model;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -237,7 +241,7 @@ public class Model {
 	{
 		fileChooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Game of Life Files", "gol");
-		fileChooser.addChoosableFileFilter(filter);
+		fileChooser.setFileFilter(filter);
 		
 		String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
 		fileChooser.setCurrentDirectory(new File(currentPath));
@@ -251,6 +255,122 @@ public class Model {
 	
 	public void writeToFile()
 	{
+		try
+		{
+			FileOutputStream fos = new FileOutputStream(saveFile);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			
+			oos.writeInt(Settings.controlSequence); // control sequence
+			oos.writeInt(Settings.cellsInColumn);
+			oos.writeInt(Settings.cellsInRow);
+			oos.writeInt(currentIteration);
+			
+			// cell types
+			oos.writeInt(cellTypes.size());
+			for(Integer ct : cellTypes.keySet()) // id, maxNeighTotal, color, array data
+			{
+				CellType currentType = cellTypes.get(ct);
+				
+				oos.writeInt(ct);
+				oos.writeInt(currentType.maxNeighboursTotal);
+				oos.writeObject(currentType.color);
+
+				HashMap<Integer, Integer> minNeigh = currentType.getMinNeighboursToSurvive();
+				HashMap<Integer, Integer> maxNeigh = currentType.getMaxNeighboursToSurvive();
+				HashMap<Integer, Integer> neighToStart = currentType.getNeighboursToStartLife();
+				
+				oos.writeInt(minNeigh.size());
+				for(Integer i : minNeigh.keySet())
+				{
+					oos.writeInt(i);
+					oos.writeInt(minNeigh.get(i));
+					oos.writeInt(maxNeigh.get(i));
+					oos.writeInt(neighToStart.get(i));
+				}
+			}
+			
+			// cell grid
+			for(int i = 0; i < cellGrid.length; ++i) // id
+			{
+				for(int j = 0; j < cellGrid[i].length; ++j)
+				{
+					oos.writeInt(cellGrid[i][j].getId());
+				}
+			}
+			
+			oos.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	/*
+	 * @returns 0 - success, 1 - error, 2 - wrong file
+	 */
+	public int loadFromFile(File file)
+	{
+		int result = 0;
+		this.saveFile = file;
+
+		try
+		{
+			FileInputStream fis = new FileInputStream(saveFile);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			
+			// check control sequence
+			if(ois.readInt() != Settings.controlSequence)
+			{
+				ois.close();
+				return 2;
+			}
+			Settings.cellsInColumn = ois.readInt();
+			Settings.cellsInRow = ois.readInt();
+			currentIteration = ois.readInt();
+			
+			// cell types
+			int cellTypeLength = ois.readInt();
+			cellTypes.clear();
+			for(int i = 0; i < cellTypeLength; ++i) // id, length, byte data
+			{
+				CellType cellType;
+				int id = ois.readInt();
+				int maxNeighTotal = ois.readInt();
+				Color color = (Color)ois.readObject();
+				
+				cellType = new CellType(id, maxNeighTotal, color);
+				
+				int neighLen = ois.readInt();
+				for(int neigh = 0; neigh < neighLen; ++neigh)
+				{
+					int neighId = ois.readInt();
+					int minNeigh = ois.readInt();
+					int maxNeigh = ois.readInt();
+					int neighToStart = ois.readInt();
+					cellType.setCellTypeNeighbourData(neighId, minNeigh, maxNeigh, neighToStart);
+				}
+				
+				cellTypes.put(id, cellType);
+			}
+			
+			// cell grid
+			this.cellGrid = new Cell[Settings.cellsInColumn][Settings.cellsInRow];
+			for(int i = 0; i < cellGrid.length; ++i)
+			{
+				for(int j = 0; j < cellGrid[i].length; ++j)
+				{
+					cellGrid[i][j] = new Cell(j, i, ois.readInt());
+				}
+			}
+			
+			ois.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		
+		return result;
 	}
 }

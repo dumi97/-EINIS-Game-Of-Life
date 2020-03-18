@@ -1,10 +1,15 @@
 package gol.model;
 
 import java.awt.Color;
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import gol.controller.Controller;
 
@@ -17,6 +22,9 @@ public class Model {
 	public static HashMap<Integer, CellType> cellTypes = new HashMap<Integer, CellType>();
 	private HashSet<String> cellsClicked = new HashSet<String>();
 	
+	private JFileChooser fileChooser;
+	private File saveFile;
+
 	public Model(Controller controller)
 	{
 		this.controller = controller;
@@ -24,6 +32,21 @@ public class Model {
 		
 		addCellType(6, 2, 5, 2, new Color(30, 255, 30)); // 2
 		setCellTypeNeighbourData(2, 1, 0, 0, 9);
+	}
+	
+	public JFileChooser getFileChooser()
+	{
+		return fileChooser;
+	}
+	
+	public File getSaveFile()
+	{
+		return saveFile;
+	}
+
+	public void setSaveFile(File saveFile)
+	{
+		this.saveFile = saveFile;
 	}
 	
 	public Cell[][] getCellGrid()
@@ -208,5 +231,26 @@ public class Model {
 		{
 			cellTypes.put(new Integer(i), new CellType(newCellTypes.get(i)));
 		}
+	}
+	
+	public void setFileChooser()
+	{
+		fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Game of Life Files", "gol");
+		fileChooser.addChoosableFileFilter(filter);
+		
+		String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
+		fileChooser.setCurrentDirectory(new File(currentPath));
+	}
+	
+	public void writeToFile(File file)
+	{
+		this.saveFile = file;
+		writeToFile();
+	}
+	
+	public void writeToFile()
+	{
+		
 	}
 }

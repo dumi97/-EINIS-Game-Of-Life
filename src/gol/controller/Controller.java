@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
 import gol.model.CellType;
@@ -195,5 +196,30 @@ public class Controller {
 		model.applySettingsChange(newCellTypes);
 		if(mustReloadGrid)
 			clear();
+	}
+	
+	public void saveFile()
+	{
+		if(model.getSaveFile() == null)
+			saveAsFile();
+		else
+		{
+			model.writeToFile();
+		}
+	}
+	
+	public void saveAsFile()
+	{
+		if(model.getFileChooser() == null)
+			model.setFileChooser();
+		
+		model.getFileChooser().setDialogTitle("Save QDBt File as...");
+		
+		int result = model.getFileChooser().showSaveDialog(view.getFrmGameOfLife());
+
+		if(result == JFileChooser.APPROVE_OPTION)
+		{
+			model.writeToFile(model.getFileChooser().getSelectedFile());
+		}
 	}
 }

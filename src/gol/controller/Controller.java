@@ -2,8 +2,6 @@ package gol.controller;
 import gol.view.View;
 
 import java.awt.EventQueue;
-import java.awt.MouseInfo;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.HashMap;
@@ -13,6 +11,7 @@ import java.util.TimerTask;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.MouseInputAdapter;
 
 import gol.model.CellType;
 import gol.model.Model;
@@ -25,12 +24,7 @@ public class Controller {
 	private Controller controller = this;
 	private ClickListener clickListener = new ClickListener();
 	
-	// mouse holding properties
-	private Timer mouseHoldTimer = new Timer();
-	private MouseHeldTask mouseHeldTask;
-	private MouseEvent lastClickEvent;
-	private int cellWidth, cellHeight;
-	private int xDif, yDif;
+	int cellWidth, cellHeight;
 	
 	// auto iteration properties
 	private Timer autoTimer = new Timer();
@@ -46,73 +40,24 @@ public class Controller {
 		}
 	}
 	
-	private class MouseHeldTask extends TimerTask {
-		@Override
-	    public void run() {			
-
-			int x = (MouseInfo.getPointerInfo().getLocation().x + xDif) / cellWidth;
-			int y = (MouseInfo.getPointerInfo().getLocation().y + yDif) / cellHeight;
-			
-			if(view.setIdOnClick())
-			{
-				model.cellClickedSet(x, y, view.getLMBSetId());
-			}
-			else
-			{
-				if(SwingUtilities.isLeftMouseButton(lastClickEvent))
-					model.cellClicked(x, y, 0);
-				else if(SwingUtilities.isRightMouseButton(lastClickEvent))
-					model.cellClicked(x, y, 1);
-				else if(SwingUtilities.isMiddleMouseButton(lastClickEvent))
-					model.cellClicked(x, y, 2);
-			}
-				
-			updateGame();
-	    }
-	}
-	
-	private class ClickListener extends MouseAdapter
+	private class ClickListener extends MouseInputAdapter 
 	{
 		@Override
 		public void mousePressed(MouseEvent e)
 		{
-			// auto task is running - ignore mouse clicks
-			if(autoIterator != null)
-				return;
-			
-			// mouse task already running
-			if(mouseHeldTask != null)
-				return;
-			
-			// calculate the x and y indexes for the clicked cell
-			cellWidth = (int)Math.floor((double)view.getCellPanel().getWidth() / Settings.cellsInRow);
-			cellHeight = (int)Math.floor((double)view.getCellPanel().getHeight() / Settings.cellsInColumn);
-			
-			if(cellWidth == 0 || cellHeight == 0)
-				return;
-			
-			xDif = e.getX() - MouseInfo.getPointerInfo().getLocation().x;
-			yDif = e.getY() - MouseInfo.getPointerInfo().getLocation().y;
-			
-			mouseHeldTask = new MouseHeldTask();
-			lastClickEvent = e;
-			model.clearClickedCells();
-			mouseHoldTimer.scheduleAtFixedRate(mouseHeldTask, 0, 1);
+			handleMouseClick(e, true);
 		}
 		
 		@Override
 		public void mouseReleased(MouseEvent e)
 		{
-			// auto task is running - ignore mouse clicks
-			if(autoIterator != null)
-				return;
-			
-			// mouse task already terminated
-			if(mouseHeldTask == null)
-				return;
-			
-			mouseHeldTask.cancel();
-			mouseHeldTask = null;
+			model.clearClickedCells();
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e)
+		{
+			handleMouseClick(e, false);
 		}
 	}
 	
@@ -136,6 +81,38 @@ public class Controller {
 		});
 	}
 	
+	private void handleMouseClick(MouseEvent e, boolean recalculateDiameters)
+	{
+		// auto task is running - ignore mouse clicks
+		if(autoIterator != null)
+			return;
+		
+		if(recalculateDiameters)
+		{
+			// calculate the x and y indexes for the clicked cell
+			cellWidth = (int)Math.floor((double)view.getCellPanel().getWidth() / Settings.cellsInRow);
+			cellHeight = (int)Math.floor((double)view.getCellPanel().getHeight() / Settings.cellsInColumn);
+			
+			if(cellWidth == 0 || cellHeight == 0)
+				return;
+		}
+		
+		int x = e.getPoint().x / cellWidth;
+		int y = e.getPoint().y / cellHeight;
+		
+		if(SwingUtilities.isLeftMouseButton(e))
+			if(view.setIdOnClick())
+				model.cellClickedSet(x, y, view.getLMBSetId());
+			else
+				model.cellClicked(x, y, 0);
+		else if(SwingUtilities.isRightMouseButton(e))
+			model.cellClicked(x, y, 1);
+		else if(SwingUtilities.isMiddleMouseButton(e))
+			model.cellClicked(x, y, 2);
+			
+		updateGame();
+	}
+	
 	public void updateGame()
 	{
 		view.painterUpdateGame(model.getCellGrid(), model.getCurrentIteration());
@@ -157,13 +134,6 @@ public class Controller {
 	{
 		if(autoIterator != null)
 			return;
-		
-		// if mouse task is active - kill it
-		if(mouseHeldTask != null)
-		{
-			mouseHeldTask.cancel();
-			mouseHeldTask = null;
-		}
 		
 		
 		autoIterator = new AutoIterator();

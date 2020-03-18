@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
@@ -32,6 +31,7 @@ import java.awt.Dimension;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MouseInputAdapter;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JFormattedTextField;
@@ -65,7 +65,7 @@ public class View {
 
 	private JPanel cellPanel;
 	@SuppressWarnings("unused")
-	private MouseListener mouseListener;
+	private MouseInputAdapter mouseListener;
 	
 	private Painter painter;
 	
@@ -91,7 +91,7 @@ public class View {
 	/**
 	 * Create the application.
 	 */
-	public View(Controller controler, MouseListener mouseListener, Cell[][] cells)
+	public View(Controller controler, MouseInputAdapter mouseListener, Cell[][] cells)
 	{
 		this.controller = controler;
 		this.mouseListener = mouseListener;
@@ -416,6 +416,9 @@ public class View {
 				btnStep.setEnabled(false);
 				btnClear.setEnabled(false);
 				btnSettings.setEnabled(false);
+				btnSave.setEnabled(false);
+				btnSaveAs.setEnabled(false);
+				btnLoad.setEnabled(false);
 				controller.auto();
 			}});
 		// stop button action listener
@@ -429,6 +432,9 @@ public class View {
 				btnStep.setEnabled(true);
 				btnClear.setEnabled(true);
 				btnSettings.setEnabled(true);
+				btnSave.setEnabled(true);
+				btnSaveAs.setEnabled(true);
+				btnLoad.setEnabled(true);
 				controller.stop();
 			}});
 		// speed slider action listener
@@ -794,12 +800,13 @@ public class View {
 		private Cell[][] cells;
 		private int currentIteration;
 		
-		public Painter(MouseListener listener)
+		public Painter(MouseInputAdapter listener)
 		{
 			setFocusable(true);
 			requestFocus();
 			setBackground(new Color(230, 230, 230));
 			addMouseListener(listener);
+			addMouseMotionListener(listener);
 		}
 		
 		public void updateCellGrid(Cell[][] cells, int currentIteration)

@@ -12,6 +12,7 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.awt.Graphics2D;
 
@@ -51,7 +52,10 @@ import javax.swing.SwingConstants;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+
 import java.awt.SystemColor;
+import javax.swing.JRadioButton;
 
 public class View {
 
@@ -70,6 +74,8 @@ public class View {
 	private JPanel mainPanelFile;
 	
 	private JLabel lblCurrentIteration;
+	private JRadioButton rdbtnSetCellId;
+	private JFormattedTextField txtSetId;
 	
 	private JFormattedTextField textFieldWidth;
 	private JFormattedTextField textFieldHeight;
@@ -78,6 +84,7 @@ public class View {
 	private HashMap<Integer, CellType> tempCellTypes;
 	private boolean mustReloadGrid;
 	private JTextField txtFileName;
+
 	
 	
 
@@ -170,29 +177,35 @@ public class View {
 		
 		JButton btnSave = new JButton("Save");
 		
+		rdbtnSetCellId = new JRadioButton("Set Cell ID");
+		rdbtnSetCellId.setForeground(Color.WHITE);
+		rdbtnSetCellId.setBackground(Color.DARK_GRAY);
+		
+		JRadioButton rdbtnIncrementCellId = new JRadioButton("Increment Cell ID");
+		rdbtnIncrementCellId.setSelected(true);
+		rdbtnIncrementCellId.setBackground(Color.DARK_GRAY);
+		rdbtnIncrementCellId.setForeground(Color.WHITE);
+		
+		ButtonGroup group = new ButtonGroup();
+		group.add(rdbtnSetCellId);
+		group.add(rdbtnIncrementCellId);
+		
+		JLabel lblLeftMouseButton = new JLabel("Left Mouse Button Action");
+		lblLeftMouseButton.setHorizontalAlignment(SwingConstants.TRAILING);
+		lblLeftMouseButton.setForeground(Color.WHITE);
+		
+		txtSetId = new JFormattedTextField(NumberFormat.INTEGER_FIELD);
+		txtSetId.setHorizontalAlignment(SwingConstants.CENTER);
+		txtSetId.setValue(new Integer(0));
+		txtSetId.setColumns(10);
+		
 		GroupLayout gl_mainPanelFile = new GroupLayout(mainPanelFile);
 		gl_mainPanelFile.setHorizontalGroup(
 			gl_mainPanelFile.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_mainPanelFile.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.TRAILING)
 						.addComponent(cellPanel, GroupLayout.DEFAULT_SIZE, 765, Short.MAX_VALUE)
-						.addGroup(gl_mainPanelFile.createSequentialGroup()
-							.addComponent(btnClear)
-							.addPreferredGap(ComponentPlacement.RELATED, 242, Short.MAX_VALUE)
-							.addComponent(lblSimulationSpeed)
-							.addGap(5)
-							.addComponent(sldSpeed, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(5)
-							.addComponent(btnStop)
-							.addGap(5)
-							.addComponent(btnAuto)
-							.addGap(5)
-							.addComponent(btnStep))
-						.addGroup(gl_mainPanelFile.createSequentialGroup()
-							.addComponent(lblCurrentIterationName)
-							.addGap(5)
-							.addComponent(lblCurrentIteration, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_mainPanelFile.createSequentialGroup()
 							.addComponent(btnSettings)
 							.addGap(136)
@@ -200,9 +213,38 @@ public class View {
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnSaveAs)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(txtFileName, GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+							.addComponent(txtFileName, GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnLoad)))
+							.addComponent(btnLoad))
+						.addGroup(gl_mainPanelFile.createSequentialGroup()
+							.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_mainPanelFile.createSequentialGroup()
+									.addComponent(lblCurrentIterationName)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblCurrentIteration, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+									.addComponent(lblLeftMouseButton, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_mainPanelFile.createSequentialGroup()
+									.addComponent(btnClear)
+									.addPreferredGap(ComponentPlacement.RELATED, 242, Short.MAX_VALUE)
+									.addComponent(lblSimulationSpeed)))
+							.addGap(5)
+							.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.LEADING, false)
+								.addGroup(Alignment.TRAILING, gl_mainPanelFile.createSequentialGroup()
+									.addComponent(sldSpeed, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addGap(5)
+									.addComponent(btnStop)
+									.addGap(5)
+									.addComponent(btnAuto)
+									.addGap(5)
+									.addComponent(btnStep))
+								.addGroup(gl_mainPanelFile.createSequentialGroup()
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(rdbtnIncrementCellId)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(rdbtnSetCellId)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(txtSetId, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE)))))
 					.addContainerGap())
 		);
 		gl_mainPanelFile.setVerticalGroup(
@@ -227,11 +269,15 @@ public class View {
 								.addGap(4)
 								.addComponent(lblSimulationSpeed))))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblCurrentIterationName)
-						.addComponent(lblCurrentIteration))
+						.addComponent(lblCurrentIteration)
+						.addComponent(lblLeftMouseButton)
+						.addComponent(rdbtnIncrementCellId)
+						.addComponent(rdbtnSetCellId)
+						.addComponent(txtSetId, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(cellPanel, GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
+					.addComponent(cellPanel, GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		mainPanelFile.setLayout(gl_mainPanelFile);
@@ -462,6 +508,26 @@ public class View {
 	public void updateFileName(String newName)
 	{
 		txtFileName.setText(newName);
+	}
+	
+	public boolean setIdOnClick()
+	{
+		return rdbtnSetCellId.isSelected();
+	}
+	
+	public int getLMBSetId()
+	{
+		try
+		{
+			txtSetId.commitEdit();
+		}
+		catch (ParseException e)
+		{
+			txtSetId.setValue(new Integer((int)txtSetId.getValue()));
+			e.printStackTrace();
+		}
+		txtSetId.setText(txtSetId.getValue().toString());
+		return (int)txtSetId.getValue();
 	}
 	
 	private void closeSettings(boolean applyChanges)

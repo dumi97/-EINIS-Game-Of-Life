@@ -114,6 +114,24 @@ public class Model {
 			cellGrid[y][x].setId(0);
 	}
 	
+	public void cellClickedSet(int x, int y, int setIdNum)
+	{	
+		if(!cellTypes.containsKey(setIdNum))
+			setIdNum = 0;
+		
+		// clicked outside of the game
+		if(y >= cellGrid.length || x >= cellGrid[0].length || y < 0 || x < 0)
+			return;
+		
+		// cell already clicked in this mouse sweep
+		if(cellsClicked.contains(x+","+y))
+			return;
+		
+		cellsClicked.add(x+","+y);
+
+		cellGrid[y][x].setId(setIdNum);
+	}
+	
 	public void clearClickedCells()
 	{
 		cellsClicked.clear();

@@ -53,12 +53,19 @@ public class Controller {
 			int x = (MouseInfo.getPointerInfo().getLocation().x + xDif) / cellWidth;
 			int y = (MouseInfo.getPointerInfo().getLocation().y + yDif) / cellHeight;
 			
-			if(SwingUtilities.isLeftMouseButton(lastClickEvent))
-				model.cellClicked(x, y, 0);
-			else if(SwingUtilities.isRightMouseButton(lastClickEvent))
-				model.cellClicked(x, y, 1);
-			else if(SwingUtilities.isMiddleMouseButton(lastClickEvent))
-				model.cellClicked(x, y, 2);
+			if(view.setIdOnClick())
+			{
+				model.cellClickedSet(x, y, view.getLMBSetId());
+			}
+			else
+			{
+				if(SwingUtilities.isLeftMouseButton(lastClickEvent))
+					model.cellClicked(x, y, 0);
+				else if(SwingUtilities.isRightMouseButton(lastClickEvent))
+					model.cellClicked(x, y, 1);
+				else if(SwingUtilities.isMiddleMouseButton(lastClickEvent))
+					model.cellClicked(x, y, 2);
+			}
 				
 			updateGame();
 	    }

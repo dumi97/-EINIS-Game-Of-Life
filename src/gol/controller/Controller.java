@@ -130,6 +130,12 @@ public class Controller {
 		updateGame();
 	}
 	
+	public void randomize()
+	{
+		model.randomize();
+		updateGame();
+	}
+	
 	public void auto()
 	{
 		if(autoIterator != null)

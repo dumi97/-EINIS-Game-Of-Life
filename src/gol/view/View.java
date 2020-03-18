@@ -199,6 +199,8 @@ public class View {
 		txtSetId.setValue(new Integer(0));
 		txtSetId.setColumns(10);
 		
+		JButton btnRandomize = new JButton("Randomize");
+		
 		GroupLayout gl_mainPanelFile = new GroupLayout(mainPanelFile);
 		gl_mainPanelFile.setHorizontalGroup(
 			gl_mainPanelFile.createParallelGroup(Alignment.TRAILING)
@@ -226,11 +228,13 @@ public class View {
 									.addComponent(lblLeftMouseButton, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE))
 								.addGroup(gl_mainPanelFile.createSequentialGroup()
 									.addComponent(btnClear)
-									.addPreferredGap(ComponentPlacement.RELATED, 242, Short.MAX_VALUE)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(btnRandomize)
+									.addPreferredGap(ComponentPlacement.RELATED, 143, Short.MAX_VALUE)
 									.addComponent(lblSimulationSpeed)))
 							.addGap(5)
-							.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.LEADING, false)
-								.addGroup(Alignment.TRAILING, gl_mainPanelFile.createSequentialGroup()
+							.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.TRAILING, false)
+								.addGroup(gl_mainPanelFile.createSequentialGroup()
 									.addComponent(sldSpeed, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 									.addGap(5)
 									.addComponent(btnStop)
@@ -239,7 +243,6 @@ public class View {
 									.addGap(5)
 									.addComponent(btnStep))
 								.addGroup(gl_mainPanelFile.createSequentialGroup()
-									.addPreferredGap(ComponentPlacement.UNRELATED)
 									.addComponent(rdbtnIncrementCellId)
 									.addPreferredGap(ComponentPlacement.UNRELATED)
 									.addComponent(rdbtnSetCellId)
@@ -259,7 +262,9 @@ public class View {
 						.addComponent(btnSave))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.TRAILING)
-						.addComponent(btnClear)
+						.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.BASELINE)
+							.addComponent(btnClear)
+							.addComponent(btnRandomize))
 						.addGroup(gl_mainPanelFile.createParallelGroup(Alignment.LEADING)
 							.addComponent(sldSpeed, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addComponent(btnStop)
@@ -415,6 +420,7 @@ public class View {
 				
 				btnStep.setEnabled(false);
 				btnClear.setEnabled(false);
+				btnRandomize.setEnabled(false);
 				btnSettings.setEnabled(false);
 				btnSave.setEnabled(false);
 				btnSaveAs.setEnabled(false);
@@ -431,6 +437,7 @@ public class View {
 				
 				btnStep.setEnabled(true);
 				btnClear.setEnabled(true);
+				btnRandomize.setEnabled(true);
 				btnSettings.setEnabled(true);
 				btnSave.setEnabled(true);
 				btnSaveAs.setEnabled(true);
@@ -451,6 +458,13 @@ public class View {
 			public void actionPerformed(ActionEvent e)
 			{
 				controller.clear();
+			}});
+		// randomize button action listener
+		btnRandomize.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				controller.randomize();
 			}});
 		// save button action listener
 		btnSave.addActionListener(new ActionListener() {

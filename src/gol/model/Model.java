@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.JFileChooser;
@@ -89,6 +90,22 @@ public class Model {
 			for(int j = 0; j < cellGrid[i].length; ++j)
 			{
 				cellGrid[i][j] = new Cell(j, i, 0);
+			}
+		}
+	}
+	
+	public void randomize()
+	{
+		Random random = new Random();
+		List<Integer> keys = new ArrayList<Integer>(cellTypes.keySet());
+		keys.add(0);
+		
+		for(int i = 0; i < cellGrid.length; ++i)
+		{
+			for(int j = 0; j < cellGrid[i].length; ++j)
+			{
+				int randomId = keys.get(random.nextInt(keys.size()));
+				cellGrid[i][j].setId(randomId);;
 			}
 		}
 	}

@@ -187,12 +187,13 @@ public class Controller {
 		}
 	}
 	
-	public void applySettingChange(HashMap<Integer,CellType> newCellTypes)
+	public void applySettingChange(HashMap<Integer,CellType> newCellTypes, boolean mustReloadGrid)
 	{
 		if(newCellTypes == null)
 			return;
 		
 		model.applySettingsChange(newCellTypes);
-		clear();
+		if(mustReloadGrid)
+			clear();
 	}
 }

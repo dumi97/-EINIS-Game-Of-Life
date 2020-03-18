@@ -53,6 +53,13 @@ public class CellType {
 		return neighboursToStartLife;
 	}
 	
+	public void clearNeighbourData()
+	{
+		minNeighboursToSurvive.clear();
+		maxNeighboursToSurvive.clear();
+		neighboursToStartLife.clear();
+	}
+	
 	public boolean setCellTypeNeighbourData(int neighbourId, int minNeighboursToSurvive, int maxNeighboursToSurvive, int neighboursToStartLife)
 	{		
 		System.out.println("Setting data for cell " + id + ": nId=" + neighbourId + ", minN=" + minNeighboursToSurvive + ", maxN=" + maxNeighboursToSurvive + ", nToStart=" + neighboursToStartLife);

@@ -39,6 +39,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JSlider;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -74,7 +75,9 @@ public class View {
 	private JPanel scrollPaneContents;
 	
 	private HashMap<Integer, CellType> tempCellTypes;
-	private int tempWidth, tempHeight;
+	private boolean mustReloadGrid;
+	private JTextField textField;
+	
 	
 
 	/**
@@ -119,8 +122,8 @@ public class View {
 		mainPanel.setBackground(Color.DARK_GRAY);
 		layeredPane.setLayout(new CardLayout(0, 0));
 		
-		//cellPanel = new JPanel();
-		cellPanel = painter;
+		cellPanel = new JPanel();
+		//cellPanel = painter;
 		cellPanel.setBackground(Color.LIGHT_GRAY);
 		cellPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
@@ -151,54 +154,81 @@ public class View {
 		
 		JButton btnSettings = new JButton("Settings");
 		
+		JButton btnSave = new JButton("Save");
+		
+		JButton btnSaveAs = new JButton("Save as...");
+		
+		textField = new JTextField();
+		textField.setColumns(10);
+		
+		JButton btnLoad = new JButton("Load");
+		
 		GroupLayout gl_mainPanel = new GroupLayout(mainPanel);
 		gl_mainPanel.setHorizontalGroup(
 			gl_mainPanel.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_mainPanel.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_mainPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(cellPanel, GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
-						.addGroup(gl_mainPanel.createSequentialGroup()
-							.addComponent(btnClear)
-							.addPreferredGap(ComponentPlacement.RELATED, 241, Short.MAX_VALUE)
-							.addComponent(lblSimulationSpeed)
-							.addGap(5)
-							.addComponent(sldSpeed, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(5)
-							.addComponent(btnStop)
-							.addGap(5)
-							.addComponent(btnAuto)
-							.addGap(5)
-							.addComponent(btnStep))
+					.addGroup(gl_mainPanel.createParallelGroup(Alignment.TRAILING)
+						.addComponent(cellPanel, GroupLayout.DEFAULT_SIZE, 765, Short.MAX_VALUE)
 						.addGroup(gl_mainPanel.createSequentialGroup()
 							.addComponent(lblCurrentIterationName)
-							.addGap(5)
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(lblCurrentIteration, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE))
-						.addComponent(btnSettings))
+						.addGroup(gl_mainPanel.createSequentialGroup()
+							.addGroup(gl_mainPanel.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_mainPanel.createSequentialGroup()
+									.addComponent(btnSettings)
+									.addGap(18)
+									.addComponent(btnSave)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnSaveAs))
+								.addComponent(btnClear))
+							.addGap(6)
+							.addGroup(gl_mainPanel.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_mainPanel.createSequentialGroup()
+									.addComponent(lblSimulationSpeed)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(sldSpeed, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnStop)
+									.addGap(5)
+									.addComponent(btnAuto)
+									.addGap(5)
+									.addComponent(btnStep))
+								.addGroup(gl_mainPanel.createSequentialGroup()
+									.addComponent(textField, GroupLayout.PREFERRED_SIZE, 463, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnLoad)))))
 					.addContainerGap())
 		);
 		gl_mainPanel.setVerticalGroup(
 			gl_mainPanel.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_mainPanel.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(btnSettings)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_mainPanel.createParallelGroup(Alignment.TRAILING)
-						.addComponent(btnClear)
-						.addGroup(gl_mainPanel.createParallelGroup(Alignment.LEADING)
-							.addComponent(sldSpeed, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(btnStop)
-							.addComponent(btnAuto)
-							.addComponent(btnStep)
-							.addGroup(gl_mainPanel.createSequentialGroup()
-								.addGap(4)
-								.addComponent(lblSimulationSpeed))))
+					.addGroup(gl_mainPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnSettings)
+						.addComponent(btnSave)
+						.addComponent(btnSaveAs)
+						.addComponent(btnLoad)
+						.addComponent(textField, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_mainPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblCurrentIterationName)
-						.addComponent(lblCurrentIteration))
+						.addGroup(gl_mainPanel.createSequentialGroup()
+							.addGroup(gl_mainPanel.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_mainPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(btnClear)
+									.addComponent(lblSimulationSpeed))
+								.addGroup(gl_mainPanel.createParallelGroup(Alignment.LEADING)
+									.addComponent(btnStop)
+									.addComponent(btnAuto)
+									.addComponent(btnStep)))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_mainPanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblCurrentIterationName)
+								.addComponent(lblCurrentIteration)))
+						.addComponent(sldSpeed, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(cellPanel, GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+					.addComponent(cellPanel, GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		mainPanel.setLayout(gl_mainPanel);
@@ -415,9 +445,24 @@ public class View {
 				newWidth = 1;
 			if(newHeight <= 0)
 				newHeight = 1;
+			if(Settings.cellsInRow != newWidth || Settings.cellsInColumn != newHeight)
+				mustReloadGrid = true;
+			
+			if(mustReloadGrid)
+			{
+				String message = "The grid will have to be cleared to apply these changes."
+						+ "\nContinue anyway?";
+				
+				int dialogResult = JOptionPane.showConfirmDialog (null, message,"Warning - Clearing the Grid", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if(dialogResult != JOptionPane.YES_OPTION)
+				{
+					return;
+				}
+			}
+			
 			Settings.cellsInRow = newWidth > Settings.maxInRow ? Settings.maxInRow : newWidth;
 			Settings.cellsInColumn = newHeight > Settings.maxInColumn ? Settings.maxInColumn : newHeight;
-			controller.applySettingChange(tempCellTypes);
+			controller.applySettingChange(tempCellTypes, mustReloadGrid);
 		}
 		else
 		{
@@ -451,13 +496,12 @@ public class View {
 	
 	public void buildSettings()
 	{
+		mustReloadGrid = false;
 		tempCellTypes = new HashMap<Integer, CellType>();
-		tempWidth = new Integer(Settings.cellsInRow);
-		tempHeight = new Integer(Settings.cellsInColumn);
 		
 		// set width and height fields
-		textFieldWidth.setValue(new Integer(tempWidth));
-		textFieldHeight.setValue(new Integer(tempHeight));
+		textFieldWidth.setValue(new Integer(Settings.cellsInRow));
+		textFieldHeight.setValue(new Integer(Settings.cellsInColumn));
 		
 		// deep copy cell types and build panels
 		for(Integer i : Model.cellTypes.keySet())
@@ -582,6 +626,7 @@ public class View {
 				public void actionPerformed(ActionEvent e) {
 					tempCellTypes.remove(i);
 					buildCellTypesWindow();
+					mustReloadGrid = true;
 				}
 			});
 			
